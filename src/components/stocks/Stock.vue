@@ -13,14 +13,15 @@
 								class="form-control"
 								placeholder="Quantity"
 								v-model="quantity"
+								:class="{danger: insufficientFunds}"
 						>
 					</div>
 					<div class="col d-flex justify-content-end">
 						<button
 								class="btn btn-success"
 								@click="buyStock"
-								:disabled="quantity <= 0"
-						>Buy
+								:disabled="insufficientFunds || quantity <= 0"
+						>{{ insufficientFunds ? 'Insufficient Funds' : 'Buy'}}
 						</button>
 					</div>
 				</div>
@@ -31,6 +32,8 @@
 </template>
 
 <script>
+	import { mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'Stock',
 	props: ['stock'],
@@ -39,14 +42,23 @@ export default {
   		quantity: 0
   	}
 	},
+	computed: {
+		...mapGetters(['funds']),
+  	insufficientFunds() {
+  		return this.quantity * this.stock.price > this.funds
+	  }
+	},
 	methods: {
+		...mapActions({
+			buyStockOrder: 'buyStock'
+		}),
   	buyStock() {
   		const order = {
   			stockId: this.stock.id,
 			  stockPrice: this.stock.price,
 			  quantity: this.quantity
 		  }
-		  console.log(order)
+		  this.buyStockOrder(order)
 		  this.quantity = 0
 	  }
 	}
@@ -54,6 +66,9 @@ export default {
 </script>
 
 <style scoped>
+	.danger {
+		border: 1px solid red;
+	}
 	.t {
 		padding: 10px;
 	}

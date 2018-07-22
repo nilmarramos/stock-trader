@@ -16,7 +16,7 @@
 			</ul>
 			<ul class="navbar-nav">
 				<li class="nav-item">
-					<router-link class="nav-link" to="#"><a>End Day</a></router-link>
+					<a href="#" class="nav-link" @click="endDay">End Day</a>
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -28,18 +28,32 @@
 					</div>
 				</li>
 			</ul>
+			<strong>Funds: {{ funds | currency }}</strong>
 		</div>
 	</nav>
 </template>
 
 <script>
+	import { mapGetters, mapActions } from 'vuex'
 export default {
-   name: 'Header'
+   name: 'Header',
+	computed: {
+		...mapGetters(['funds'])
+	},
+	methods: {
+		...mapActions(['randomizeStocks']),
+   	endDay() {
+			this.randomizeStocks()
+    }
+	}
 }
 </script>
 
 <style scoped>
 	nav {
-		margin-bottom: 30px;
+		margin-bottom: 30px ;
+	}
+	strong {
+		margin-left: 10px;
 	}
 </style>
