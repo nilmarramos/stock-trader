@@ -18,8 +18,8 @@
 				<li class="nav-item">
 					<a href="#" class="nav-link" @click="endDay">End Day</a>
 				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<li :class="{show: isDropdownOpen}" class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" aria-haspopup="true" aria-expanded="false">
 						Save & Load
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -37,6 +37,11 @@
 	import { mapGetters, mapActions } from 'vuex'
 export default {
    name: 'Header',
+	data() {
+		return {
+			isDropdownOpen: true
+		}
+	},
 	computed: {
 		...mapGetters(['funds'])
 	},
