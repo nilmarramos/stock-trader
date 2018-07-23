@@ -18,13 +18,13 @@
 				<li class="nav-item">
 					<a href="#" class="nav-link" @click="endDay">End Day</a>
 				</li>
-				<li :class="{show: isDropdownOpen}" class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+				<li :class="{show: isDropdownOpen}" class="nav-item dropdown" @click="isDropdownOpen = !isDropdownOpen">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 						Save & Load
 					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">Save Data</a>
-						<a class="dropdown-item" href="#">Load Data</a>
+					<div :class="{show: isDropdownOpen}" class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#" @click="saveData">Save Data</a>
+						<a class="dropdown-item" href="#" @click="loadData">Load Data</a>
 					</div>
 				</li>
 			</ul>
@@ -34,22 +34,38 @@
 </template>
 
 <script>
+	import axios from 'axios'
 	import { mapGetters, mapActions } from 'vuex'
+
 export default {
    name: 'Header',
 	data() {
 		return {
-			isDropdownOpen: true
+			isDropdownOpen: false
 		}
 	},
 	computed: {
-		...mapGetters(['funds'])
+		...mapGetters(['funds', 'stockPortfolio', 'allStocks'])
 	},
 	methods: {
-		...mapActions(['randomizeStocks']),
+		...mapActions({
+			randomizeStocks: 'randomizeStocks',
+			fetchData: 'loadData'
+		}),
    	endDay() {
 			this.randomizeStocks()
-    }
+    },
+		saveData() {
+			const data = {
+				funds: this.funds,
+				stockPortfolio: this.stockPortfolio,
+				stocks: this.allStocks
+			}
+			axios.put('https://vue-stock-trader-569b8.firebaseio.com/data.json', data)
+		},
+		loadData() {
+			this.fetchData()
+		}
 	}
 }
 </script>
